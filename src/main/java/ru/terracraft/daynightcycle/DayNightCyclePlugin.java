@@ -16,6 +16,7 @@ import ru.terracraft.daynightcycle.lang.LocaleListener;
 import ru.terracraft.daynightcycle.placeholder.AfkExpansion;
 import ru.terracraft.daynightcycle.sleep.SleepListener;
 import ru.terracraft.daynightcycle.sleep.SleepManager;
+import ru.terracraft.daynightcycle.update.DncUpdateChecker;
 
 public final class DayNightCyclePlugin extends JavaPlugin {
 
@@ -30,6 +31,7 @@ public final class DayNightCyclePlugin extends JavaPlugin {
     private TimeController timeController;
     private AfkManager afkManager;
     private SleepManager sleepManager;
+    private DncUpdateChecker updateChecker;
     private Metrics metrics;
 
     @Override
@@ -87,6 +89,10 @@ public final class DayNightCyclePlugin extends JavaPlugin {
             new AfkExpansion(this).register();
             getLogger().info("PlaceholderAPI: зарегистрирован %dnc_afk%");
         }
+
+        // ─── Update Checker ───
+        this.updateChecker = new DncUpdateChecker(this);
+        updateChecker.check();
 
         // ─── Запуск ───
         timeController.start();
