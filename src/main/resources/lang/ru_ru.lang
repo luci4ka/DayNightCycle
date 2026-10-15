@@ -1,0 +1,78 @@
+# ═══════════════════════════════════════════
+#   DayNightCycle — Русский язык
+# ═══════════════════════════════════════════
+
+# ─── Общие ───
+prefix=<gradient:#00BFFF:#1E90FF>[DayNightCycle]</gradient> <dark_gray>»</dark_gray>
+
+# ─── AFK (action bar) ───
+afk.enabled=<yellow>😴 AFK
+afk.disabled=<green>✅ Снова активен
+afk.manual.toggle=<gray>AFK: %state%
+afk.state.on=<green>вкл
+afk.state.off=<red>выкл
+
+# ─── Сон ───
+sleep.skip=<yellow>🌙 Ночь пропущена! <gray>(<white>%sleeping%<gray>/<white>%required%<gray> спящих)
+sleep.animation.start=<yellow>⏩ Ночь ускоряется...
+
+# ─── Цикл ───
+cycle.set.success=<green>✅ Цикл обновлён: <white>день %day% мин<green>, <white>ночь %night% мин
+
+# ─── Команды: reload ───
+command.reload.success=<green>✅ Конфигурация перезагружена.
+command.reload.error=<red>❌ Ошибка перезагрузки: <white>%error%
+
+# ─── Команды: status ───
+command.status.header=<gradient:#FFD700:#FFA500>▬▬▬▬▬ DayNightCycle ▬▬▬▬▬</gradient>
+command.status.day=<gray>☀ День: <white>%day% <gray>мин
+command.status.night=<gray>🌙 Ночь: <white>%night% <gray>мин
+command.status.afk-timeout=<gray>😴 AFK через: <white>%timeout% <gray>мин
+command.status.afk-players=<gray>👤 AFK сейчас: <yellow>%count%
+command.status.footer=<gradient:#FFA500:#FFD700>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+
+# ─── Команды: info ───
+command.info.header=<gradient:#00BFFF:#1E90FF>▬▬▬▬▬ DayNightCycle ▬▬▬▬▬</gradient>
+command.info.version=<gray>Версия: <white>%version%
+command.info.author=<gray>Автор: <white>%author%
+command.info.languages=<gray>Языки: <white>%languages%
+command.info.papi=<gray>PlaceholderAPI: %state%
+command.info.bstats=<gray>bStats: %state%
+command.info.footer=<gradient:#1E90FF:#00BFFF>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+
+# ─── Команды: time ───
+command.time.header=<gradient:#FFD700:#FFA500>▬▬▬▬▬ Время в мире ▬▬▬▬▬</gradient>
+command.time.world=<gray>Мир: <white>%world%
+command.time.day=<gray>Время: <white>%time% <gray>(<white>%phase%<gray>)
+command.time.raw=<gray>Тиков: <white>%ticks%
+command.time.footer=<gradient:#FFA500:#FFD700>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+
+# ─── Time: фазы ───
+command.time.phase.day=<yellow>день
+command.time.phase=<gray>Фаза: <white>%phase%
+command.time.phase.sunset=<gold>закат
+command.time.phase.night=<dark_blue>ночь
+command.time.phase.sunrise=<yellow>рассвет
+
+# ─── Time: миры ───
+command.time.world.overworld=<green>Выживание
+command.time.world.nether=<red>Нижний
+command.time.world.end=<dark_purple>Край
+command.time.world.other=<gray>%world%
+
+# ─── Состояния (вкл/выкл/не найден) ───
+state.enabled=<green>включён
+state.disabled=<red>выключен
+state.missing=<red>не найден
+
+# ─── Sleep override ───
+sleeplist.header=<gray>📋 Список override сна (<white>%count%</white>):
+sleeplist.entry=<gray> • <white>%player%
+sleeplist.added=<green>✅ Игрок <white>%player%<green> добавлен в override.
+sleeplist.removed=<green>✅ Игрок <white>%player%<green> удалён из override.
+sleeplist.not-found=<red>❌ Игрок <white>%player%<red> не найден в списке.
+
+# ─── Ошибки ───
+error.player-only=<red>❌ Команда только для игроков.
+error.no-permission=<red>❌ Недостаточно прав.
+error.unknown=<red>❌ Неизвестная ошибка: <white>%error%

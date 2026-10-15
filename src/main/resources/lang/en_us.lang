@@ -1,0 +1,79 @@
+# ═══════════════════════════════════════════
+#   DayNightCycle — English
+# ═══════════════════════════════════════════
+
+# ─── Common ───
+prefix=<gradient:#00BFFF:#1E90FF>[DayNightCycle]</gradient> <dark_gray>»</dark_gray>
+
+# ─── AFK (action bar) ───
+afk.enabled=<yellow>😴 AFK
+afk.disabled=<green>✅ Active again
+afk.manual.toggle=<gray>AFK: %state%
+afk.state.on=<green>on
+afk.state.off=<red>off
+
+# ─── Sleep ───
+sleep.skip=<yellow>🌙 Night skipped! <gray>(<white>%sleeping%<gray>/<white>%required%<gray> sleeping)
+sleep.animation.start=<yellow>⏩ Night is accelerating...
+
+# ─── Cycle ───
+cycle.set.success=<green>✅ Cycle updated: <white>day %day% min<green>, <white>night %night% min
+
+# ─── Commands: reload ───
+command.reload.success=<green>✅ Configuration reloaded.
+command.reload.error=<red>❌ Reload error: <white>%error%
+
+# ─── Commands: status ───
+command.status.header=<gradient:#FFD700:#FFA500>▬▬▬▬▬ DayNightCycle ▬▬▬▬▬</gradient>
+command.status.day=<gray>☀ Day: <white>%day% <gray>min
+command.status.night=<gray>🌙 Night: <white>%night% <gray>min
+command.status.afk-timeout=<gray>😴 AFK after: <white>%timeout% <gray>min
+command.status.afk-players=<gray>👤 AFK now: <yellow>%count%
+command.status.footer=<gradient:#FFA500:#FFD700>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+
+# ─── Commands: info ───
+command.info.header=<gradient:#00BFFF:#1E90FF>▬▬▬▬▬ DayNightCycle ▬▬▬▬▬</gradient>
+command.info.version=<gray>Version: <white>%version%
+command.info.author=<gray>Author: <white>%author%
+command.info.languages=<gray>Languages: <white>%languages%
+command.info.papi=<gray>PlaceholderAPI: %state%
+command.info.bstats=<gray>bStats: %state%
+command.info.footer=<gradient:#1E90FF:#00BFFF>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+
+# ─── Commands: time ───
+command.time.header=<gradient:#FFD700:#FFA500>▬▬▬▬▬ World Time ▬▬▬▬▬</gradient>
+command.time.world=<gray>World: <white>%world%
+command.time.day=<gray>Time: <white>%time% <gray>(<white>%phase%<gray>)
+command.time.raw=<gray>Ticks: <white>%ticks%
+command.time.footer=<gradient:#FFA500:#FFD700>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+
+# ─── Time: phases ───
+command.time.phase.day=<yellow>day
+command.time.phase=<gray>Phase: <white>%phase%
+command.time.phase.sunset=<gold>sunset
+command.time.phase.night=<dark_blue>night
+command.time.phase.sunrise=<yellow>sunrise
+
+# ─── Time: миры ───
+command.time.world=<gray>World: %world%
+command.time.world.overworld=<green>Overworld
+command.time.world.nether=<red>Nether
+command.time.world.end=<dark_purple>The End
+command.time.world.other=<gray>%world%
+
+# ─── States ───
+state.enabled=<green>enabled
+state.disabled=<red>disabled
+state.missing=<red>not found
+
+# ─── Sleep override ───
+sleeplist.header=<gray>📋 Sleep override list (<white>%count%</white>):
+sleeplist.entry=<gray> • <white>%player%
+sleeplist.added=<green>✅ Player <white>%player%<green> added to override.
+sleeplist.removed=<green>✅ Player <white>%player%<green> removed from override.
+sleeplist.not-found=<red>❌ Player <white>%player%<red> not found in list.
+
+# ─── Errors ───
+error.player-only=<red>❌ Player-only command.
+error.no-permission=<red>❌ Insufficient permissions.
+error.unknown=<red>❌ Unknown error: <white>%error%

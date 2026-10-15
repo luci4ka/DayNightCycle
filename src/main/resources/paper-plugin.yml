@@ -1,0 +1,20 @@
+name: DayNightCycle
+version: '${version}'
+main: ru.terracraft.daynightcycle.DayNightCyclePlugin
+api-version: '1.21'
+authors: [ luci ]
+description: Гибкое управление длительностью дня/ночи + AFK + пропуск сна
+website: https://terracraft.ru
+
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+    LuckPerms:
+      load: BEFORE
+      required: false
+    CommandAPI:
+      load: BEFORE
+      required: true
+      join-classpath: true
