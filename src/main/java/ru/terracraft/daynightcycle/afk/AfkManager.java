@@ -1,27 +1,24 @@
 package ru.terracraft.daynightcycle.afk;
 
-
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
 import ru.terracraft.daynightcycle.DayNightCyclePlugin;
 import ru.terracraft.daynightcycle.lang.MessageKey;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AfkManager {
 
     private final DayNightCyclePlugin plugin;
-    private final NamespacedKey afkKey;
-    private final Map<UUID, Long> lastActivity = new HashMap<>();
+    private final Set<UUID> afk = ConcurrentHashMap.newKeySet();
+    private final Map<UUID, Long> lastActivity = new ConcurrentHashMap<>();
     private BukkitTask task;
 
     public AfkManager(DayNightCyclePlugin plugin) {
         this.plugin = plugin;
-        this.afkKey = new NamespacedKey(plugin, "afk_status");
     }
 
     public void start() {
@@ -31,18 +28,19 @@ public class AfkManager {
 
     public void stop() {
         if (task != null) { task.cancel(); task = null; }
-        lastActivity.clear();
     }
 
     public void reload() {
-        lastActivity.keySet().removeIf(uuid -> plugin.getServer().getPlayer(uuid) == null);
+        afk.clear();
+        lastActivity.clear();
         start();
     }
 
     public void onQuit(Player player) {
         if (player == null) return;
-        lastActivity.remove(player.getUniqueId());
-        // PDC сохраняется в playerdata сам по себе — ничего чистить не нужно
+        UUID id = player.getUniqueId();
+        afk.remove(id);
+        lastActivity.remove(id);
     }
 
     private void tick() {
@@ -64,39 +62,53 @@ public class AfkManager {
 
     public void updateActivity(Player player) {
         if (player == null) return;
-        lastActivity.put(player.getUniqueId(), System.currentTimeMillis());
-        if (isAfk(player)) {
+        long now = System.currentTimeMillis();
+        UUID id = player.getUniqueId();
+        Long last = lastActivity.get(id);
+        // не чаще раза в секунду, кроме выхода из AFK
+        if (last != null && now - last < 1000 && !afk.contains(id)) return;
+        lastActivity.put(id, now);
+        if (afk.contains(id)) {
             setAfk(player, false, false);
         }
     }
 
     public boolean isAfk(Player player) {
-        if (player == null) return false;
-        Boolean value = player.getPersistentDataContainer().get(afkKey, PersistentDataType.BOOLEAN);
-        return value != null && value;
+        return player != null && afk.contains(player.getUniqueId());
     }
 
-    public void setAfk(Player player, boolean afk, boolean silent) {
+    public void setAfk(Player player, boolean value, boolean silent) {
         if (player == null) return;
+        UUID id = player.getUniqueId();
 
-        if (afk) {
-            player.getPersistentDataContainer().set(afkKey, PersistentDataType.BOOLEAN, true);
-            if (!silent) {
-                plugin.getLanguageManager().sendActionBar(player, MessageKey.AFK_ENABLED);
-            }
+        if (value) {
+            if (!afk.add(id)) return;
         } else {
-            player.getPersistentDataContainer().remove(afkKey);
-            if (!silent) {
-                plugin.getLanguageManager().sendActionBar(player, MessageKey.AFK_DISABLED);
-            }
+            lastActivity.put(id, System.currentTimeMillis());
+            if (!afk.remove(id)) return;
+        }
+
+        if (!silent) {
+            plugin.getLanguageManager().sendActionBar(player,
+                    value ? MessageKey.AFK_ENABLED : MessageKey.AFK_DISABLED);
+        }
+
+        if (plugin.getSleepManager() != null) {
+            plugin.getSleepManager().checkSleep(player.getWorld());
         }
     }
 
     public void toggleAfk(Player player) {
+        if (player == null) return;
+        if (!plugin.getMainConfig().afk.enabled) {
+            plugin.getLanguageManager().sendActionBar(player, MessageKey.AFK_DISABLED_SYSTEM);
+            return;
+        }
+        if (player.hasPermission("dnc.bypass")) return;
+
         boolean next = !isAfk(player);
         setAfk(player, next, true);
 
-        // Ручное переключение — тоже в action bar
         plugin.getLanguageManager().sendActionBar(
                 player,
                 MessageKey.AFK_MANUAL_TOGGLE,

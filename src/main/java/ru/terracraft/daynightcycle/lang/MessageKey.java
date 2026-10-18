@@ -44,8 +44,6 @@ public enum MessageKey {
     COMMAND_TIME_HEADER("command.time.header"),
     COMMAND_TIME_WORLD("command.time.world"),
     COMMAND_TIME_DAY("command.time.day"),
-    COMMAND_TIME_NIGHT("command.time.night"),
-    COMMAND_TIME_RAW("command.time.raw"),
     COMMAND_TIME_FOOTER("command.time.footer"),
 
     // ─── Time: миры ───
@@ -53,13 +51,10 @@ public enum MessageKey {
     COMMAND_TIME_WORLD_NETHER("command.time.world.nether"),
     COMMAND_TIME_WORLD_END("command.time.world.end"),
     COMMAND_TIME_WORLD_OTHER("command.time.world.other"),
+    SLEEPLIST_INVALID_NAME("sleeplist.invalid-name"),
+    AFK_DISABLED_SYSTEM("afk.disabled.system"),
+    ERROR_NO_PERMISSION("error.no-permission");
 
-    // ─── Time: phases ───
-    COMMAND_TIME_PHASE_DAY("command.time.phase.day"),
-    COMMAND_TIME_PHASE("command.time.phase"),
-    COMMAND_TIME_PHASE_SUNSET("command.time.phase.sunset"),
-    COMMAND_TIME_PHASE_NIGHT("command.time.phase.night"),
-    COMMAND_TIME_PHASE_SUNRISE("command.time.phase.sunrise");
 
     private final String path;
 

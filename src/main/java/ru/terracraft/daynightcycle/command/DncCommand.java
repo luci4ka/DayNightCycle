@@ -5,14 +5,18 @@ import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.executors.CommandExecutor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.terracraft.daynightcycle.DayNightCyclePlugin;
+import ru.terracraft.daynightcycle.cycle.TimeUtil;
 import ru.terracraft.daynightcycle.lang.MessageKey;
 
 public class DncCommand {
 
     private final DayNightCyclePlugin plugin;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public DncCommand(DayNightCyclePlugin plugin) {
         this.plugin = plugin;
@@ -21,26 +25,45 @@ public class DncCommand {
     public CommandAPICommand build() {
         CommandAPICommand root = new CommandAPICommand("daynightcycle")
                 .withAliases("dnc")
-                .executes((CommandExecutor) (sender, _) -> sendInfo(sender));
+                .executes((sender, _) -> {
+                    if (!sender.hasPermission("dnc.command.status")) {
+                        send(sender, MessageKey.ERROR_NO_PERMISSION);
+                        return;
+                    }
+                    sendInfo(sender);
+                });
 
-        // ─── /dnc info ───
         root.withSubcommand(new CommandAPICommand("info")
+                .withPermission(CommandPermission.fromString("dnc.command.info"))
                 .executes((CommandExecutor) (sender, _) -> sendInfo(sender)));
 
-        // ─── /dnc reload ───
         root.withSubcommand(new CommandAPICommand("reload")
                 .withPermission(CommandPermission.fromString("dnc.command.reload"))
                 .executes((sender, _) -> {
-                    try {
-                        plugin.reloadAll();
-                        send(sender);
-                    } catch (Exception e) {
-                        send(sender, MessageKey.COMMAND_RELOAD_ERROR, "%error%", e.getMessage());
+                    String error = plugin.reloadAll();
+                    if (error == null) {
+                        send(sender, MessageKey.COMMAND_RELOAD_SUCCESS);
+                    } else {
+                        send(sender, MessageKey.COMMAND_RELOAD_ERROR, "%error%", miniMessage.escapeTags(error));
                     }
                 }));
 
-        // ─── /dnc status ───
+        // ─── /dnc time ───
+        root.withSubcommand(new CommandAPICommand("time")
+                .withPermission(CommandPermission.fromString("dnc.command.time"))
+                .executes((sender, _) -> {
+                    Player p = asPlayer(sender);
+                    if (p == null) {
+                        for (World world : plugin.getServer().getWorlds()) {
+                            sendTime(sender, world);
+                        }
+                        return;
+                    }
+                    sendTime(sender, p.getWorld());
+                }));
+
         root.withSubcommand(new CommandAPICommand("status")
+                .withPermission(CommandPermission.fromString("dnc.command.status"))
                 .executes((sender, _) -> {
                     Player p = asPlayer(sender);
                     var lang = plugin.getLanguageManager();
@@ -58,30 +81,29 @@ public class DncCommand {
                     sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_STATUS_FOOTER), p));
                 }));
 
-        // ─── /dnc set day|night <min> ───
         root.withSubcommand(new CommandAPICommand("set")
                 .withPermission(CommandPermission.fromString("dnc.command.set"))
                 .withSubcommand(new CommandAPICommand("day")
-                        .withArguments(new IntegerArgument("minutes", 1))
+                        .withArguments(new IntegerArgument("minutes", 1, 1440))
                         .executes((sender, args) -> {
-                            Object raw = args.get("minutes");
-                            plugin.getMainConfig().cycle.dayMinutes = raw instanceof Number n ? n.intValue() : 1;
-                            plugin.saveConfigs();
+                            int minutes = (int) args.get("minutes");
+                            plugin.getMainConfig().cycle.dayMinutes = minutes;
+                            plugin.getConfigLoader().saveConfig();
                             plugin.getTimeController().reload();
                             sendSet(sender);
                         }))
                 .withSubcommand(new CommandAPICommand("night")
-                        .withArguments(new IntegerArgument("minutes", 1))
+                        .withArguments(new IntegerArgument("minutes", 1, 1440))
                         .executes((sender, args) -> {
-                            Object raw = args.get("minutes");
-                            plugin.getMainConfig().cycle.nightMinutes = raw instanceof Number n ? n.intValue() : 1; // ← FIX
-                            plugin.saveConfigs();
+                            int minutes = (int) args.get("minutes");
+                            plugin.getMainConfig().cycle.nightMinutes = minutes;
+                            plugin.getConfigLoader().saveConfig();
                             plugin.getTimeController().reload();
                             sendSet(sender);
                         })));
 
-        // ─── /dnc sleeplist ───
         root.withSubcommand(new CommandAPICommand("sleeplist")
+                .withPermission(CommandPermission.fromString("dnc.command.sleeplist.view"))
                 .executes((sender, _) -> {
                     Player p = asPlayer(sender);
                     var lang = plugin.getLanguageManager();
@@ -97,43 +119,62 @@ public class DncCommand {
                         .withPermission(CommandPermission.fromString("dnc.command.sleeplist"))
                         .withArguments(new StringArgument("player"))
                         .executes((sender, args) -> {
-                            Object raw = args.get("player");
-                            String name = raw instanceof String s ? s : "";
-                            if (name.isEmpty()) {
-                                send(sender, MessageKey.SLEEPLIST_NOT_FOUND, "%player%", "?");
+                            String name = (String) args.get("player");
+                            String safeName = miniMessage.escapeTags(name);
+                            if (!isValidName(name)) {
+                                send(sender, MessageKey.SLEEPLIST_INVALID_NAME, "%player%", safeName);
                                 return;
                             }
                             var list = plugin.getSleepList().players;
                             if (list.stream().noneMatch(n -> n.equalsIgnoreCase(name))) {
                                 list.add(name);
-                                plugin.saveConfigs();
+                                plugin.getConfigLoader().saveSleepList();
                             }
-                            send(sender, MessageKey.SLEEPLIST_ADDED, "%player%", name);
+                            send(sender, MessageKey.SLEEPLIST_ADDED, "%player%", safeName);
                         }))
                 .withSubcommand(new CommandAPICommand("remove")
                         .withPermission(CommandPermission.fromString("dnc.command.sleeplist"))
                         .withArguments(new StringArgument("player"))
                         .executes((sender, args) -> {
-                            Object raw = args.get("player");
-                            String name = raw instanceof String s ? s : "";
-                            if (name.isEmpty()) {
-                                send(sender, MessageKey.SLEEPLIST_NOT_FOUND, "%player%", "?");
+                            String name = (String) args.get("player");
+                            String safeName = miniMessage.escapeTags(name);
+                            if (!isValidName(name)) {
+                                send(sender, MessageKey.SLEEPLIST_INVALID_NAME, "%player%", safeName);
                                 return;
                             }
                             var list = plugin.getSleepList().players;
                             boolean removed = list.removeIf(n -> n.equalsIgnoreCase(name));
                             if (removed) {
-                                plugin.saveConfigs();
-                                send(sender, MessageKey.SLEEPLIST_REMOVED, "%player%", name);
+                                plugin.getConfigLoader().saveSleepList();
+                                send(sender, MessageKey.SLEEPLIST_REMOVED, "%player%", safeName);
                             } else {
-                                send(sender, MessageKey.SLEEPLIST_NOT_FOUND, "%player%", name);
+                                send(sender, MessageKey.SLEEPLIST_NOT_FOUND, "%player%", safeName);
                             }
                         })));
 
         return root;
     }
 
-    // ═══════════════ INFO ═══════════════
+    private boolean isValidName(String name) {
+        return name != null && name.matches("^[A-Za-z0-9_.]{3,17}$");
+    }
+
+    private void sendTime(CommandSender sender, World world) {
+        Player p = asPlayer(sender);
+        var lang = plugin.getLanguageManager();
+
+        long ticks = world.getTime();
+        String time24 = TimeUtil.toTime24(ticks);
+        String worldName = lang.worldLabel(p, world);
+
+        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_HEADER), p));
+        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_WORLD)
+                .replace("%world%", worldName), p));
+        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_DAY)
+                .replace("%time%", time24)
+                .replace("%ticks%", String.valueOf(ticks)), p));
+        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_FOOTER), p));
+    }
 
     private void sendInfo(CommandSender sender) {
         Player p = asPlayer(sender);
@@ -143,7 +184,7 @@ public class DncCommand {
         String author = String.join(", ", plugin.getPluginMeta().getAuthors());
         String languages = String.join(", ", lang.getAvailableLanguages());
 
-        String papiState = plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null
+        String papiState = plugin.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")
                 ? lang.getMessage(p, MessageKey.STATE_ENABLED)
                 : lang.getMessage(p, MessageKey.STATE_DISABLED);
 
@@ -165,16 +206,14 @@ public class DncCommand {
         sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_INFO_FOOTER), p));
     }
 
-    // ═══════════════ HELPERS ═══════════════
-
     private Player asPlayer(CommandSender sender) {
         return sender instanceof Player p ? p : null;
     }
 
-    private void send(CommandSender sender) {
+    private void send(CommandSender sender, MessageKey key) {
         Player p = asPlayer(sender);
         var lang = plugin.getLanguageManager();
-        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_RELOAD_SUCCESS), p));
+        sender.sendMessage(lang.render(lang.getMessage(p, key), p));
     }
 
     private void send(CommandSender sender, MessageKey key, String placeholder, String value) {

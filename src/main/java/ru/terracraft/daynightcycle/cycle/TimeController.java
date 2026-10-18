@@ -4,9 +4,16 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
 import ru.terracraft.daynightcycle.DayNightCyclePlugin;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class TimeController {
 
+    private static final int PERIOD = 2;
+
     private final DayNightCyclePlugin plugin;
+    private final Map<UUID, Double> remainder = new HashMap<>();
     private BukkitTask task;
 
     public TimeController(DayNightCyclePlugin plugin) {
@@ -16,40 +23,46 @@ public class TimeController {
     public void start() {
         stop();
         if (!plugin.getMainConfig().cycle.enabled) return;
-        task = plugin.getServer().getScheduler().runTaskTimer(plugin, this::tick, 20L, 20L);
+        remainder.clear();
+        task = plugin.getServer().getScheduler().runTaskTimer(plugin, this::tick, PERIOD, PERIOD);
     }
 
     public void stop() {
         if (task != null) { task.cancel(); task = null; }
+        remainder.clear();
     }
 
     public void reload() {
         start();
     }
 
+    /** Очистка остатка при выгрузке мира. */
+    public void forgetWorld(World world) {
+        remainder.remove(world.getUID());
+    }
+
     private void tick() {
-        if (!plugin.getMainConfig().cycle.enabled) return;
+        var cycle = plugin.getMainConfig().cycle;
+        if (!cycle.enabled) return;
 
-        long dayMinutes = plugin.getMainConfig().cycle.dayMinutes;
-        long nightMinutes = plugin.getMainConfig().cycle.nightMinutes;
+        double perRun = PERIOD / 20.0;
+        double daySpeed   = 12000.0 / (cycle.dayMinutes * 60.0) * perRun;
+        double nightSpeed = 12000.0 / (cycle.nightMinutes * 60.0) * perRun;
 
-        // Скорость: сколько ванильных тиков проходит за 1 секунду
-        // tick() вызывается раз в секунду (20L)
-        double daySpeed = 12000.0 / (dayMinutes * 60.0);
-        double nightSpeed = 12000.0 / (nightMinutes * 60.0);
+        for (World w : plugin.getServer().getWorlds()) {
+            if (!applies(w)) continue;
+            if (w.getEnvironment() != World.Environment.NORMAL) continue;
+            if (plugin.getSleepManager() != null && plugin.getSleepManager().isSkipping(w)) continue;
 
-        for (World world : plugin.getServer().getWorlds()) {
-            if (!applies(world)) continue;
-            if (world.getEnvironment() != World.Environment.NORMAL) continue;
+            long time = w.getTime();
+            double acc = remainder.getOrDefault(w.getUID(), 0.0)
+                    + (time < 12000 ? daySpeed : nightSpeed);
+            long step = (long) acc;
+            remainder.put(w.getUID(), acc - step);
 
-            long time = world.getTime();
-            double speed = (time < 12000) ? daySpeed : nightSpeed;
-
-            long newTime = time + Math.round((float) speed);
-            if (newTime >= 24000) newTime -= 24000;
-            if (newTime < 0) newTime += 24000;
-
-            world.setTime(newTime);
+            if (step > 0) {
+                w.setTime((time + step) % 24000L);
+            }
         }
     }
 

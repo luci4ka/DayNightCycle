@@ -1,78 +1,71 @@
 # ═══════════════════════════════════════════
-#   DayNightCycle — Русский язык
+#   DayNightCycle — Русский язык (TerraCraft Style)
 # ═══════════════════════════════════════════
 
 # ─── Общие ───
-prefix=<gradient:#00BFFF:#1E90FF>[DayNightCycle]</gradient> <dark_gray>»</dark_gray>
+prefix=<gradient:#4CAF50:#FFC107><bold>DayNightCycle</bold></gradient> <#1B5E20>»
 
 # ─── AFK (action bar) ───
-afk.enabled=<yellow>😴 AFK
-afk.disabled=<green>✅ Снова активен
-afk.manual.toggle=<gray>AFK: %state%
-afk.state.on=<green>вкл
-afk.state.off=<red>выкл
+afk.enabled=<#FFA726>😴 AFK
+afk.disabled=<#4CAF50>✅ Снова активен
+afk.disabled.system=<#EF5350>❌ AFK-система отключена.
+afk.manual.toggle=<#B0BEC5>AFK: <#FFFFFF>%state%
+afk.state.on=<#4CAF50>вкл
+afk.state.off=<#EF5350>выкл
 
 # ─── Сон ───
-sleep.skip=<yellow>🌙 Ночь пропущена! <gray>(<white>%sleeping%<gray>/<white>%required%<gray> спящих)
-sleep.animation.start=<yellow>⏩ Ночь ускоряется...
+sleep.skip=<#FFA726>🌙 Ночь пропущена! <#B0BEC5>(<#FFFFFF>%sleeping%<#B0BEC5>/<#FFFFFF>%required%<#B0BEC5> спящих)
+sleep.animation.start=<#FFA726>⏩ Ночь ускоряется...
 
 # ─── Цикл ───
-cycle.set.success=<green>✅ Цикл обновлён: <white>день %day% мин<green>, <white>ночь %night% мин
+cycle.set.success=<#4CAF50>✅ Цикл обновлён: <#FFFFFF>день %day% мин<#4CAF50>, <#FFFFFF>ночь %night% мин
 
 # ─── Команды: reload ───
-command.reload.success=<green>✅ Конфигурация перезагружена.
-command.reload.error=<red>❌ Ошибка перезагрузки: <white>%error%
+command.reload.success=<#4CAF50>✅ Конфигурация перезагружена.
+command.reload.error=<#EF5350>❌ Ошибка перезагрузки: <#FFFFFF>%error%
+command.reload.error.console=<#EF5350>❌ Ошибка перезагрузки. Подробности в консоли.
 
 # ─── Команды: status ───
-command.status.header=<gradient:#FFD700:#FFA500>▬▬▬▬▬ DayNightCycle ▬▬▬▬▬</gradient>
-command.status.day=<gray>☀ День: <white>%day% <gray>мин
-command.status.night=<gray>🌙 Ночь: <white>%night% <gray>мин
-command.status.afk-timeout=<gray>😴 AFK через: <white>%timeout% <gray>мин
-command.status.afk-players=<gray>👤 AFK сейчас: <yellow>%count%
-command.status.footer=<gradient:#FFA500:#FFD700>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+command.status.header=<gradient:#FFC107:#FFA726>▬▬▬▬▬ <bold>DayNightCycle</bold> ▬▬▬▬▬</gradient>
+command.status.day=<#B0BEC5>☀ День: <#FFFFFF>%day% <#B0BEC5>мин
+command.status.night=<#B0BEC5>🌙 Ночь: <#FFFFFF>%night% <#B0BEC5>мин
+command.status.afk-timeout=<#B0BEC5>😴 AFK через: <#FFFFFF>%timeout% <#B0BEC5>мин
+command.status.afk-players=<#B0BEC5>👤 AFK сейчас: <#FFA726>%count%
+command.status.footer=<gradient:#FFA726:#FFC107>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
 
 # ─── Команды: info ───
-command.info.header=<gradient:#00BFFF:#1E90FF>▬▬▬▬▬ DayNightCycle ▬▬▬▬▬</gradient>
-command.info.version=<gray>Версия: <white>%version%
-command.info.author=<gray>Автор: <white>%author%
-command.info.languages=<gray>Языки: <white>%languages%
-command.info.papi=<gray>PlaceholderAPI: %state%
-command.info.bstats=<gray>bStats: %state%
-command.info.footer=<gradient:#1E90FF:#00BFFF>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
+command.info.header=<gradient:#29B6F6:#4CAF50>▬▬▬▬▬ <bold>DayNightCycle</bold> ▬▬▬▬▬</gradient>
+command.info.version=<#B0BEC5>Версия: <#FFFFFF>%version%
+command.info.author=<#B0BEC5>Автор: <#FFFFFF>%author%
+command.info.languages=<#B0BEC5>Языки: <#FFFFFF>%languages%
+command.info.papi=<#B0BEC5>PlaceholderAPI: %state%
+command.info.bstats=<#B0BEC5>bStats: %state%
+command.info.footer=<gradient:#4CAF50:#29B6F6>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
 
 # ─── Команды: time ───
-command.time.header=<gradient:#FFD700:#FFA500>▬▬▬▬▬ Время в мире ▬▬▬▬▬</gradient>
-command.time.world=<gray>Мир: <white>%world%
-command.time.day=<gray>Время: <white>%time% <gray>(<white>%phase%<gray>)
-command.time.raw=<gray>Тиков: <white>%ticks%
-command.time.footer=<gradient:#FFA500:#FFD700>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>
-
-# ─── Time: фазы ───
-command.time.phase.day=<yellow>день
-command.time.phase=<gray>Фаза: <white>%phase%
-command.time.phase.sunset=<gold>закат
-command.time.phase.night=<dark_blue>ночь
-command.time.phase.sunrise=<yellow>рассвет
+command.time.header=<gradient:#FFC107:#FFA726>▶ <bold>Время в мире</bold> ◀</gradient>
+command.time.world=<#B0BEC5>▶ <gray>Мир: <#FFFFFF>%world%
+command.time.day=<#B0BEC5>▶ <gray>Время: <#FFFFFF>%time% <#B0BEC5>(<#FFFFFF>%ticks% <#B0BEC5>тиков)
+command.time.footer=<gradient:#FFA726:#FFC107>▶ ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ ◀</gradient>
 
 # ─── Time: миры ───
-command.time.world.overworld=<green>Выживание
-command.time.world.nether=<red>Нижний
-command.time.world.end=<dark_purple>Край
-command.time.world.other=<gray>%world%
+command.time.world.overworld=<#4CAF50>Выживание
+command.time.world.nether=<#EF5350>Ад
+command.time.world.end=<#AB47BC>Край
+command.time.world.other=<#B0BEC5>%world%
 
-# ─── Состояния (вкл/выкл/не найден) ───
-state.enabled=<green>включён
-state.disabled=<red>выключен
-state.missing=<red>не найден
+# ─── Состояния ───
+state.enabled=<#4CAF50>включён
+state.disabled=<#EF5350>выключен
 
 # ─── Sleep override ───
-sleeplist.header=<gray>📋 Список override сна (<white>%count%</white>):
-sleeplist.entry=<gray> • <white>%player%
-sleeplist.added=<green>✅ Игрок <white>%player%<green> добавлен в override.
-sleeplist.removed=<green>✅ Игрок <white>%player%<green> удалён из override.
-sleeplist.not-found=<red>❌ Игрок <white>%player%<red> не найден в списке.
+sleeplist.header=<#B0BEC5>📋 Список override сна (<#FFFFFF>%count%<#B0BEC5>):
+sleeplist.entry=<#B0BEC5> • <#FFFFFF>%player%
+sleeplist.added=<#4CAF50>✅ Игрок <#FFFFFF>%player%<#4CAF50> добавлен в override.
+sleeplist.removed=<#4CAF50>✅ Игрок <#FFFFFF>%player%<#4CAF50> удалён из override.
+sleeplist.not-found=<#EF5350>❌ Игрок <#FFFFFF>%player%<#EF5350> не найден в списке.
+sleeplist.invalid-name=<#EF5350>❌ Недопустимое имя игрока: <#FFFFFF>%player%
 
 # ─── Ошибки ───
-error.player-only=<red>❌ Команда только для игроков.
-error.no-permission=<red>❌ Недостаточно прав.
-error.unknown=<red>❌ Неизвестная ошибка: <white>%error%
+error.no-permission=<#EF5350>❌ Недостаточно прав.
+error.unknown=<#EF5350>❌ Неизвестная ошибка: <#FFFFFF>%error%

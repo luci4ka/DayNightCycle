@@ -14,7 +14,6 @@ public class SleepListConfig {
             Имена не зависят от регистра.
             Пример:
               players:
-                - KillerItaly
                 - Notch
             """)
     public List<String> players = new ArrayList<>();

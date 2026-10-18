@@ -30,7 +30,12 @@ public class DncUpdateChecker {
                             plugin.getPluginMeta().getVersion()
                     ).build();
 
-            checker.checkNowAsync().thenAccept(this::handleResult);
+            checker.checkNowAsync()
+                    .thenAccept(this::handleResult)
+                    .exceptionally(ex -> {
+                        plugin.getLogger().warning("Update check failed: " + ex.getMessage());
+                        return null;
+                    });
 
         } catch (Exception e) {
             plugin.getLogger().warning("Update checker не инициализирован: " + e.getMessage());

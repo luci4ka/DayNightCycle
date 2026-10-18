@@ -1,4 +1,3 @@
-
 # DayNightCycle
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -18,10 +17,11 @@
 - 🌙 **Пропуск сна** — гибкий процент спящих, AFK-игроки считаются спящими.
 - 📋 **Override-список сна** — игроки, которые всегда считаются спящими.
 - 🎬 **Анимация ускорения ночи** — плавный переход к рассвету вместо мгновенного.
-- ⏰ **Просмотр времени** — `/time` с режимами `time`, `ticks`, `phase`.
-- 🌐 **Мультиязычность** — `ru_ru`, `en_us`, автоматический выбор по локали игрока.
-- 🔌 **PlaceholderAPI** — `%dnc_afk%`, `%dnc_afk_prefix%`.
+- ⏰ **Просмотр времени** — `/dnc time` с временем в формате 24 часа.
+- 🌐 **Мультиязычность** — 7 языков, автоматический выбор по локали игрока.
+- 🔌 **PlaceholderAPI** — `%dnc_afk%`, `%dnc_afk_prefix%`, `%dnc_time%`, `%dnc_ticks%`, `%dnc_world%`.
 - 📊 **bStats** — анонимная статистика использования.
+- 🔔 **Update Checker** — проверка обновлений через GitHub Releases.
 
 ---
 
@@ -42,8 +42,11 @@
 ### `config.yml`
 
 ```yaml
-# Язык по умолчанию (ru_ru, en_us)
+# Язык по умолчанию (ru_ru, en_us, de_de, zh_cn, es_es, kk_kz, be_by)
 language: ru_ru
+
+# Проверять обновления при старте (GitHub Releases)
+update-check: true
 
 cycle:
   enabled: true
@@ -52,7 +55,8 @@ cycle:
   night-minutes: 10
   # Миров, к которым применяется (пусто = все оверворлды)
   worlds: []
-  # Отключить ванильный цикл
+  # Отключить ванильный цикл (ADVANCE_TIME).
+  # Если false — ваш цикл и ванильный работают одновременно, время идёт вдвое быстрее.
   disable-vanilla-cycle: true
 
 sleep:
@@ -63,6 +67,8 @@ sleep:
   afk-counts-as-sleeping: true
   # Сообщение о пропуске ночи
   broadcast-skip: true
+  # Сбрасывать погоду при пропуске ночи
+  clear-weather: true
   animation:
     enabled: true
     duration-seconds: 3
@@ -92,53 +98,32 @@ players:
 
 | Команда | Описание | Право |
 |---|---|---|
-| `/dnc` | Показать информацию о плагине | — |
-| `/dnc info` | Информация, версия, языки, статус интеграций | — |
-| `/dnc status` | Текущие настройки: день, ночь, AFK | — |
+| `/dnc` | Показать информацию о плагине | `dnc.command.status` |
+| `/dnc info` | Информация, версия, языки, статус интеграций | `dnc.command.info` |
+| `/dnc status` | Текущие настройки: день, ночь, AFK | `dnc.command.status` |
+| `/dnc time` | Показать игровое время в текущем мире | `dnc.command.time` |
 | `/dnc reload` | Перезагрузить конфигурацию | `dnc.command.reload` |
 | `/dnc set day <мин>` | Установить длительность дня | `dnc.command.set` |
 | `/dnc set night <мин>` | Установить длительность ночи | `dnc.command.set` |
-| `/dnc sleeplist` | Показать override-список | — |
+| `/dnc sleeplist` | Показать override-список | `dnc.command.sleeplist.view` |
 | `/dnc sleeplist add <ник>` | Добавить игрока в override | `dnc.command.sleeplist` |
 | `/dnc sleeplist remove <ник>` | Удалить игрока из override | `dnc.command.sleeplist` |
 | `/afk` | Переключить AFK-статус | `dnc.afk` |
-| `/time` | Показать игровое время в текущем мире | — |
-| `/time ticks` | Показать время в тиках | — |
-| `/time phase` | Показать только фазу дня | — |
 
-### ⏰ `/time` — примеры вывода
+### ⏰ `/dnc time` — пример вывода
 
-**`/time`** — время в формате 24 часа:
 ```
 ▬▬▬▬▬ Время в мире ▬▬▬▬▬
 Мир: Выживание
-Время: 14:30 (день)
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-```
-
-**`/time ticks`** — время в тиках:
-```
-▬▬▬▬▬ Время в мире ▬▬▬▬▬
-Мир: Выживание
-Время: 8500 (день)
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-```
-
-**`/time phase`** — только фаза:
-```
-▬▬▬▬▬ Время в мире ▬▬▬▬▬
-Мир: Выживание
-Фаза: день
+Время: 14:30 (8500 тиков)
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 ```
 
 **Цвета миров:**
-- `Выживание` — <span style="color:green">зелёный</span>
-- `Нижний` — <span style="color:red">красный</span>
-- `Край` — <span style="color:purple">фиолетовый</span>
-- Кастомные миры — <span style="color:gray">серый</span> (с именем мира)
-
-**Фазы:** `день`, `закат`, `ночь`, `рассвет`.
+- `Выживание` — зелёный
+- `Нижний` — красный
+- `Край` — фиолетовый
+- Кастомные миры — серый (с именем мира)
 
 ---
 
@@ -146,9 +131,13 @@ players:
 
 | Право | Описание | По умолчанию |
 |---|---|---|
+| `dnc.command.status` | Доступ к `/dnc` и `/dnc status` | Все |
+| `dnc.command.info` | Доступ к `/dnc info` | Все |
+| `dnc.command.time` | Доступ к `/dnc time` | Все |
 | `dnc.command.reload` | Доступ к `/dnc reload` | OP |
 | `dnc.command.set` | Доступ к `/dnc set` | OP |
 | `dnc.command.sleeplist` | Управление override-списком | OP |
+| `dnc.command.sleeplist.view` | Просмотр override-списка | OP (дочернее у `.sleeplist`) |
 | `dnc.afk` | Доступ к `/afk` | Все |
 | `dnc.bypass` | Не становится AFK, не считается в сне | OP |
 
@@ -160,10 +149,18 @@ players:
 |---|---|
 | `%dnc_afk%` | Текст AFK, если игрок в AFK, иначе пусто |
 | `%dnc_afk_prefix%` | То же + пробел |
+| `%dnc_time%` | Игровое время в формате `HH:mm` |
+| `%dnc_ticks%` | Игровое время в тиках |
+| `%dnc_world%` | Название мира (цветное) |
 
 **Пример использования в TAB:**
 ```yaml
-%dnc_afk_prefix%%player%
+scoreboards:
+  - name: "info"
+    lines:
+      - "&7Время: &f%dnc_time%"
+      - "&7Мир: &f%dnc_world%"
+      - "&7AFK: &f%dnc_afk_prefix%%player%"
 ```
 
 ---
@@ -174,19 +171,22 @@ players:
 
 - `ru_ru.lang` — русский
 - `en_us.lang` — английский
+- `de_de.lang` — немецкий
+- `zh_cn.lang` — упрощённый китайский
+- `es_es.lang` — испанский
+- `kk_kz.lang` — казахский
+- `be_by.lang` — белорусский
 
 **Добавить новый язык:**
-1. Скопируй `en_us.lang` → `de_de.lang`.
+1. Скопируй `en_us.lang` → `fr_fr.lang`.
 2. Переведи значения.
 3. Перезапусти сервер (или `/dnc reload`).
 
-Плагин автоматически подхватит язык игрока через `player.locale()`.
+Плагин автоматически подхватит язык игрока через `player.locale()`. Если языка нет — fallback на `ru_ru`.
 
 ---
 
 ## ❓ FAQ
-
----
 
 ### 🔹 AFK-статус не снимается при движении
 
@@ -231,7 +231,6 @@ sleep:
 
 ---
 
-
 ### 🔹 Как изменить длительность дня и ночи?
 
 **Через команду:**
@@ -252,21 +251,19 @@ sleep:
 
 **Минимум:** Paper 1.21.11. Работает на форках: Purpur, Pufferfish, Leaf.
 
-
 ---
 
 ### 🔹 Как интегрировать с TAB?
 
-Используй плейсхолдер `%dnc_afk_prefix%` в конфиге TAB:
+Используй плейсхолдеры в конфиге TAB:
 
 ```yaml
 scoreboards:
-  - name: "afk"
+  - name: "info"
     lines:
-      - "%dnc_afk_prefix%%player%"
+      - "&7Время: &f%dnc_time%"
+      - "&7AFK: &f%dnc_afk_prefix%%player%"
 ```
-
-Игрок увидит `AFK PlayerName`, если он в AFK, или `PlayerName` — если нет.
 
 ---
 
@@ -308,6 +305,7 @@ cd DayNightCycle
 - **ConfigLib 4.8.1** — YAML-конфиги с автогенерацией
 - **Adventure / MiniMessage** — форматирование текста
 - **bStats 3.2.1** — метрики
+- **mc-plugin-update-notifier** — проверка обновлений
 
 ---
 
@@ -322,13 +320,20 @@ DayNightCycle/
 │   ├── config/                      # конфиги
 │   ├── cycle/                       # управление временем
 │   ├── lang/                        # i18n
+│   ├── listener/                    # WorldListener
 │   ├── placeholder/                 # PlaceholderAPI
-│   └── sleep/                       # пропуск сна
+│   ├── sleep/                       # пропуск сна
+│   └── update/                      # проверка обновлений
 ├── src/main/resources/
 │   ├── paper-plugin.yml
 │   └── lang/
 │       ├── ru_ru.lang
-│       └── en_us.lang
+│       ├── en_us.lang
+│       ├── de_de.lang
+│       ├── zh_cn.lang
+│       ├── es_es.lang
+│       ├── kk_kz.lang
+│       └── be_by.lang
 ├── build.gradle
 ├── LICENSE
 └── README.md
@@ -342,6 +347,13 @@ DayNightCycle/
 
 ---
 
+## 👤 Автор
+
+**TerraCraft** — [terracraft.ru](https://terracraft.ru)
+
+---
+
 ## 🐛 Баги и предложения
 
 Если нашёл баг или есть идея — создай issue в [GitHub Issues](https://github.com/luci4ka/DayNightCycle/issues).
+```
