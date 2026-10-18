@@ -347,13 +347,6 @@ DayNightCycle/
 
 ---
 
-## 👤 Автор
-
-**TerraCraft** — [terracraft.ru](https://terracraft.ru)
-
----
-
 ## 🐛 Баги и предложения
 
 Если нашёл баг или есть идея — создай issue в [GitHub Issues](https://github.com/luci4ka/DayNightCycle/issues).
-```
