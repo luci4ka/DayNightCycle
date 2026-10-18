@@ -12,8 +12,10 @@ public class CommandRegistrar {
     }
 
     public void registerAll() {
-        new DncCommand(plugin).build().register();
+        DncCommand dnc = new DncCommand(plugin);
+        dnc.build().register();
+        dnc.buildDtime().register();   // ← /dtime
         new AfkCommand(plugin).build().register();
-        plugin.getLogger().info("Зарегистрированы команды: /dnc, /afk");
+        plugin.getLogger().info("Зарегистрированы команды: /dnc, /afk, /dtime");
     }
 }

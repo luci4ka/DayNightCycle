@@ -10,7 +10,6 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.terracraft.daynightcycle.DayNightCyclePlugin;
-import ru.terracraft.daynightcycle.cycle.TimeUtil;
 import ru.terracraft.daynightcycle.lang.MessageKey;
 
 public class DncCommand {
@@ -52,14 +51,15 @@ public class DncCommand {
         root.withSubcommand(new CommandAPICommand("time")
                 .withPermission(CommandPermission.fromString("dnc.command.time"))
                 .executes((sender, _) -> {
+                    var lang = plugin.getLanguageManager();
                     Player p = asPlayer(sender);
                     if (p == null) {
                         for (World world : plugin.getServer().getWorlds()) {
-                            sendTime(sender, world);
+                            lang.sendTime(sender, world);
                         }
                         return;
                     }
-                    sendTime(sender, p.getWorld());
+                    lang.sendTime(sender, p.getWorld());
                 }));
 
         root.withSubcommand(new CommandAPICommand("status")
@@ -155,25 +155,29 @@ public class DncCommand {
         return root;
     }
 
-    private boolean isValidName(String name) {
-        return name != null && name.matches("^[A-Za-z0-9_.]{3,17}$");
+    // ═══════════════ /dtime ═══════════════
+
+    /**
+     * Отдельная команда /dtime — алиас для /dnc time.
+     */
+    public CommandAPICommand buildDtime() {
+        return new CommandAPICommand("dtime")
+                .withPermission(CommandPermission.fromString("dnc.command.time"))
+                .executes((CommandExecutor) (sender, _) -> {
+                    var lang = plugin.getLanguageManager();
+                    Player p = asPlayer(sender);
+                    if (p == null) {
+                        for (World world : plugin.getServer().getWorlds()) {
+                            lang.sendTime(sender, world);
+                        }
+                        return;
+                    }
+                    lang.sendTime(sender, p.getWorld());
+                });
     }
 
-    private void sendTime(CommandSender sender, World world) {
-        Player p = asPlayer(sender);
-        var lang = plugin.getLanguageManager();
-
-        long ticks = world.getTime();
-        String time24 = TimeUtil.toTime24(ticks);
-        String worldName = lang.worldLabel(p, world);
-
-        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_HEADER), p));
-        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_WORLD)
-                .replace("%world%", worldName), p));
-        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_DAY)
-                .replace("%time%", time24)
-                .replace("%ticks%", String.valueOf(ticks)), p));
-        sender.sendMessage(lang.render(lang.getMessage(p, MessageKey.COMMAND_TIME_FOOTER), p));
+    private boolean isValidName(String name) {
+        return name != null && name.matches("^[A-Za-z0-9_.]{3,17}$");
     }
 
     private void sendInfo(CommandSender sender) {

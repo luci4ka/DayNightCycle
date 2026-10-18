@@ -182,4 +182,19 @@ public class LanguageManager {
         };
         return getMessage(player, key).replace("%world%", name);
     }
+
+    public void sendTime(org.bukkit.command.CommandSender sender, World world) {
+        Player p = sender instanceof Player pl ? pl : null;
+        long ticks = world.getTime();
+        String time24 = ru.terracraft.daynightcycle.cycle.TimeUtil.toTime24(ticks);
+        String worldName = worldLabel(p, world);
+
+        sender.sendMessage(render(getMessage(p, MessageKey.COMMAND_TIME_HEADER), p));
+        sender.sendMessage(render(getMessage(p, MessageKey.COMMAND_TIME_WORLD)
+                .replace("%world%", worldName), p));
+        sender.sendMessage(render(getMessage(p, MessageKey.COMMAND_TIME_DAY)
+                .replace("%time%", time24)
+                .replace("%ticks%", String.valueOf(ticks)), p));
+        sender.sendMessage(render(getMessage(p, MessageKey.COMMAND_TIME_FOOTER), p));
+    }
 }
