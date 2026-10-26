@@ -13,7 +13,6 @@ public enum MessageKey {
 
     CYCLE_SET_SUCCESS("cycle.set.success"),
 
-    // ─── Info ───
     COMMAND_INFO_HEADER("command.info.header"),
     COMMAND_INFO_VERSION("command.info.version"),
     COMMAND_INFO_AUTHOR("command.info.author"),
@@ -22,7 +21,6 @@ public enum MessageKey {
     COMMAND_INFO_BSTATS("command.info.bstats"),
     COMMAND_INFO_FOOTER("command.info.footer"),
 
-    // ─── State ───
     STATE_ENABLED("state.enabled"),
     STATE_DISABLED("state.disabled"),
 
@@ -46,7 +44,6 @@ public enum MessageKey {
     COMMAND_TIME_DAY("command.time.day"),
     COMMAND_TIME_FOOTER("command.time.footer"),
 
-    // ─── Time: миры ───
     COMMAND_TIME_WORLD_OVERWORLD("command.time.world.overworld"),
     COMMAND_TIME_WORLD_NETHER("command.time.world.nether"),
     COMMAND_TIME_WORLD_END("command.time.world.end"),

@@ -1,0 +1,71 @@
+# ═══════════════════════════════════════════
+#   DayNightCycle — Русский язык (TerraCraft Style)
+# ═══════════════════════════════════════════
+
+# ─── Общие ───
+prefix: "<gradient:#FFC107:#FFC107><bold>DayNightCycle</bold></gradient> <#1B5E20>»"
+
+# ─── AFK (action bar) ───
+afk.enabled: "<#FFA726>AFK"
+afk.disabled: "<#8BC34A>Снова активен"
+afk.disabled.system: "<#FFA726>AFK-система отключена."
+afk.manual.toggle: "<#B0BEC5>AFK: <#FFFFFF>%state%"
+afk.state.on: "<#8BC34A>вкл"
+afk.state.off: "<#FFA726>выкл"
+
+# ─── Сон ───
+sleep.skip: "<#FFA726>Ночь пропущена! <#B0BEC5>(<#FFFFFF>%sleeping%<#B0BEC5>/<#FFFFFF>%required%<#B0BEC5> спящих)"
+sleep.animation.start: "<#FFA726>Ночь ускоряется..."
+
+# ─── Цикл ───
+cycle.set.success: "<#8BC34A>Цикл обновлён: <#FFFFFF>день %day% мин<#8BC34A>, <#FFFFFF>ночь %night% мин"
+
+# ─── Команды: reload ───
+command.reload.success: "<#8BC34A>Конфигурация перезагружена."
+command.reload.error: "<#FFA726>Ошибка перезагрузки: <#FFFFFF>%error%"
+command.reload.error.console: "<#FFA726>Ошибка перезагрузки. Подробности в консоли."
+
+# ─── Команды: status ───
+command.status.header: "<gradient:#FFC107:#FFC107>▬▬▬▬▬ <bold>DayNightCycle</bold> ▬▬▬▬▬</gradient>"
+command.status.day: "<#B0BEC5>День: <#FFFFFF>%day% <#B0BEC5>мин"
+command.status.night: "<#B0BEC5>Ночь: <#FFFFFF>%night% <#B0BEC5>мин"
+command.status.afk-timeout: "<#B0BEC5>AFK через: <#FFFFFF>%timeout% <#B0BEC5>мин"
+command.status.afk-players: "<#B0BEC5>AFK сейчас: <#FFA726>%count%"
+command.status.footer: "<gradient:#FFC107:#FFC107>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>"
+
+# ─── Команды: info ───
+command.info.header: "<gradient:#8BC34A:#8BC34A>▬▬▬▬▬ <bold>DayNightCycle</bold> ▬▬▬▬▬</gradient>"
+command.info.version: "<#B0BEC5>Версия: <#FFFFFF>%version%"
+command.info.author: "<#B0BEC5>Автор: <#FFFFFF>%author%"
+command.info.languages: "<#B0BEC5>Языки: <#FFFFFF>%languages%"
+command.info.papi: "<#B0BEC5>PlaceholderAPI: %state%"
+command.info.bstats: "<#B0BEC5>bStats: %state%"
+command.info.footer: "<gradient:#8BC34A:#8BC34A>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>"
+
+# ─── Команды: time ───
+command.time.header: "<gradient:#FFC107:#FFC107>▶ <bold>Время в мире</bold> ◀</gradient>"
+command.time.world: "<#B0BEC5>▶ <gray>Мир: <#FFFFFF>%world%"
+command.time.day: "<#B0BEC5>▶ <gray>Время: <#FFFFFF>%time% <#B0BEC5>(<#FFFFFF>%ticks% <#B0BEC5>тиков)"
+command.time.footer: "<gradient:#FFC107:#FFC107>▶ ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ ◀</gradient>"
+
+# ─── Time: миры ───
+command.time.world.overworld: "<#8BC34A>Выживание"
+command.time.world.nether: "<#FFA726>Ад"
+command.time.world.end: "<#AB47BC>Край"
+command.time.world.other: "<#B0BEC5>%world%"
+
+# ─── Состояния ───
+state.enabled: "<#8BC34A>включён"
+state.disabled: "<#FFA726>выключен"
+
+# ─── Sleep override ───
+sleeplist.header: "<#B0BEC5>Список override сна (<#FFFFFF>%count%<#B0BEC5>):"
+sleeplist.entry: "<#B0BEC5> • <#FFFFFF>%player%"
+sleeplist.added: "<#8BC34A>Игрок <#FFFFFF>%player%<#8BC34A> добавлен в override."
+sleeplist.removed: "<#8BC34A>Игрок <#FFFFFF>%player%<#8BC34A> удалён из override."
+sleeplist.not-found: "<#FFA726>Игрок <#FFFFFF>%player%<#FFA726> не найден в списке."
+sleeplist.invalid-name: "<#FFA726>Недопустимое имя игрока: <#FFFFFF>%player%"
+
+# ─── Ошибки ───
+error.no-permission: "<#FFA726>Недостаточно прав."
+error.unknown: "<#FFA726>Неизвестная ошибка: <#FFFFFF>%error%"

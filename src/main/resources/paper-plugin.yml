@@ -1,10 +1,10 @@
 name: DayNightCycle
 version: '${version}'
 main: ru.terracraft.daynightcycle.DayNightCyclePlugin
-api-version: '1.21.11'
+api-version: '26.1'
 authors: [ luci ]
 description: Flexible day/night cycle + AFK + sleep skip
-website: https://host.terra-craft.ru
+website: terra-craft.ru
 
 dependencies:
   server:

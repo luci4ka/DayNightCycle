@@ -1,0 +1,71 @@
+# ═══════════════════════════════════════════
+#   DayNightCycle — English (TerraCraft Style)
+# ═══════════════════════════════════════════
+
+# ─── Common ───
+prefix: "<gradient:#FFC107:#FFC107><bold>DayNightCycle</bold></gradient> <#1B5E20>»"
+
+# ─── AFK (action bar) ───
+afk.enabled: "<#FFA726>AFK"
+afk.disabled: "<#8BC34A>Active again"
+afk.disabled.system: "<#FFA726>AFK system is disabled."
+afk.manual.toggle: "<#B0BEC5>AFK: <#FFFFFF>%state%"
+afk.state.on: "<#8BC34A>on"
+afk.state.off: "<#FFA726>off"
+
+# ─── Sleep ───
+sleep.skip: "<#FFA726>Night skipped! <#B0BEC5>(<#FFFFFF>%sleeping%<#B0BEC5>/<#FFFFFF>%required%<#B0BEC5> sleeping)"
+sleep.animation.start: "<#FFA726>Night is accelerating..."
+
+# ─── Cycle ───
+cycle.set.success: "<#8BC34A>Cycle updated: <#FFFFFF>day %day% min<#8BC34A>, <#FFFFFF>night %night% min"
+
+# ─── Commands: reload ───
+command.reload.success: "<#8BC34A>Configuration reloaded."
+command.reload.error: "<#FFA726>Reload error: <#FFFFFF>%error%"
+command.reload.error.console: "<#FFA726>Reload failed. Check console for details."
+
+# ─── Commands: status ───
+command.status.header: "<gradient:#FFC107:#FFC107>▬▬▬▬▬ <bold>DayNightCycle</bold> ▬▬▬▬▬</gradient>"
+command.status.day: "<#B0BEC5>Day: <#FFFFFF>%day% <#B0BEC5>min"
+command.status.night: "<#B0BEC5>Night: <#FFFFFF>%night% <#B0BEC5>min"
+command.status.afk-timeout: "<#B0BEC5>AFK after: <#FFFFFF>%timeout% <#B0BEC5>min"
+command.status.afk-players: "<#B0BEC5>AFK now: <#FFA726>%count%"
+command.status.footer: "<gradient:#FFC107:#FFC107>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>"
+
+# ─── Commands: info ───
+command.info.header: "<gradient:#8BC34A:#8BC34A>▬▬▬▬▬ <bold>DayNightCycle</bold> ▬▬▬▬▬</gradient>"
+command.info.version: "<#B0BEC5>Version: <#FFFFFF>%version%"
+command.info.author: "<#B0BEC5>Author: <#FFFFFF>%author%"
+command.info.languages: "<#B0BEC5>Languages: <#FFFFFF>%languages%"
+command.info.papi: "<#B0BEC5>PlaceholderAPI: %state%"
+command.info.bstats: "<#B0BEC5>bStats: %state%"
+command.info.footer: "<gradient:#8BC34A:#8BC34A>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</gradient>"
+
+# ─── Commands: time ───
+command.time.header: "<gradient:#FFC107:#FFC107>▶ <bold>World Time</bold> ◀</gradient>"
+command.time.world: "<#B0BEC5>▶ <gray>World: <#FFFFFF>%world%"
+command.time.day: "<#B0BEC5>▶ <gray>Time: <#FFFFFF>%time% <#B0BEC5>(<#FFFFFF>%ticks% <#B0BEC5>ticks)"
+command.time.footer: "<gradient:#FFC107:#FFC107>▶ ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ ◀</gradient>"
+
+# ─── Time: worlds ───
+command.time.world.overworld: "<#8BC34A>Overworld"
+command.time.world.nether: "<#FFA726>Nether"
+command.time.world.end: "<#AB47BC>The End"
+command.time.world.other: "<#B0BEC5>%world%"
+
+# ─── States ───
+state.enabled: "<#8BC34A>enabled"
+state.disabled: "<#FFA726>disabled"
+
+# ─── Sleep override ───
+sleeplist.header: "<#B0BEC5>Sleep override list (<#FFFFFF>%count%<#B0BEC5>):"
+sleeplist.entry: "<#B0BEC5> • <#FFFFFF>%player%"
+sleeplist.added: "<#8BC34A>Player <#FFFFFF>%player%<#8BC34A> added to override."
+sleeplist.removed: "<#8BC34A>Player <#FFFFFF>%player%<#8BC34A> removed from override."
+sleeplist.not-found: "<#FFA726>Player <#FFFFFF>%player%<#FFA726> not found in list."
+sleeplist.invalid-name: "<#FFA726>Invalid player name: <#FFFFFF>%player%"
+
+# ─── Errors ───
+error.no-permission: "<#FFA726>Insufficient permissions."
+error.unknown: "<#FFA726>Unknown error: <#FFFFFF>%error%"

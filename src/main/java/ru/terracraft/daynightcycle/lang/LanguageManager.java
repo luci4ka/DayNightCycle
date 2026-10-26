@@ -8,9 +8,8 @@ import ru.terracraft.daynightcycle.DayNightCyclePlugin;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LanguageManager {
 
     private static final String DEFAULT_LANGUAGE = "ru_ru";
-    private static final String LANG_EXTENSION = ".lang";
+    private static final String LANG_EXTENSION = ".yml";
 
     private final DayNightCyclePlugin plugin;
     private volatile Map<String, LangFile> languages = Map.of();
@@ -39,7 +38,7 @@ public class LanguageManager {
     private void loadBundledDefault() {
         try (InputStream in = plugin.getResource("lang/" + DEFAULT_LANGUAGE + LANG_EXTENSION)) {
             if (in != null) {
-                this.bundledDefault = LangFile.loadFrom(new InputStreamReader(in, StandardCharsets.UTF_8));
+                this.bundledDefault = LangFile.loadFrom(in, "bundled:" + DEFAULT_LANGUAGE);
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to load bundled default lang: " + e.getMessage());
@@ -55,15 +54,23 @@ public class LanguageManager {
         copyDefaultLanguages(langFolder);
 
         Map<String, LangFile> loaded = new HashMap<>();
-        File[] files = langFolder.listFiles((_, name) -> name.endsWith(LANG_EXTENSION));
+        File[] files = langFolder.listFiles((_, name) ->
+                name.toLowerCase(Locale.ROOT).endsWith(LANG_EXTENSION));
         if (files != null) {
             for (File file : files) {
-                String code = file.getName()
-                        .substring(0, file.getName().length() - LANG_EXTENSION.length())
-                        .toLowerCase(Locale.ROOT);
+                String code = normalizeCode(file.getName()
+                        .substring(0, file.getName().length() - LANG_EXTENSION.length()));
                 try {
-                    loaded.put(code, LangFile.load(file));
-                    plugin.getLogger().info("Loaded language: " + code);
+                    LangFile lang = LangFile.load(file);
+                    if (lang.size() == 0) {
+                        plugin.getLogger().warning("Language file " + file.getName()
+                                + " is empty or contains no string values — skipped.");
+                        continue;
+                    }
+                    warnIfIncomplete(lang, file.getName());
+                    loaded.put(code, lang);
+                    plugin.getLogger().info("Loaded language: " + code
+                            + " (" + lang.size() + " keys, from " + file.getName() + ")");
                 } catch (Exception e) {
                     plugin.getLogger().warning("Failed to load " + file.getName() + ": " + e.getMessage());
                 }
@@ -72,14 +79,44 @@ public class LanguageManager {
 
         String configured = plugin.getMainConfig().language;
         if (configured != null) {
-            this.currentLanguage = configured.toLowerCase(Locale.ROOT);
+            this.currentLanguage = normalizeCode(configured);
         }
         if (!loaded.containsKey(currentLanguage)) {
+            plugin.getLogger().warning("Configured language '" + currentLanguage
+                    + "' not found among files — falling back to " + DEFAULT_LANGUAGE);
             this.currentLanguage = DEFAULT_LANGUAGE;
         }
 
         this.languages = Map.copyOf(loaded);
         localeCache.clear();
+    }
+
+    /**
+     * Сравнивает пользовательский файл с bundled default и предупреждает,
+     * если не хватает более 30% ключей (значит, файл, вероятно, старый/неполный).
+     */
+    private void warnIfIncomplete(LangFile lang, String fileName) {
+        if (bundledDefault == null || bundledDefault.size() == 0) return;
+        Set<String> missing = new HashSet<>(bundledDefault.getAll().keySet());
+        missing.removeAll(lang.getAll().keySet());
+        int total = bundledDefault.size();
+        if (missing.isEmpty()) return;
+        double ratio = (double) missing.size() / total;
+        if (ratio > 0.3) {
+            plugin.getLogger().warning("Language file " + fileName + " is missing "
+                    + missing.size() + "/" + total + " keys ("
+                    + Math.round(ratio * 100) + "%). Missing keys will fall back to "
+                    + DEFAULT_LANGUAGE + ". First missing: "
+                    + missing.stream().sorted().findFirst().orElse("?"));
+        }
+    }
+
+    /**
+     * Приводит имя файла к виду "fr_fr": нижний регистр, дефисы → подчёркивания.
+     * Позволяет пользователю называть файл fr-FR.yml, FR_fr.yml, fr_fr.yml — всё сработает.
+     */
+    private static String normalizeCode(String raw) {
+        return raw.toLowerCase(Locale.ROOT).replace('-', '_');
     }
 
     private void copyDefaultLanguages(File langFolder) {
@@ -101,10 +138,10 @@ public class LanguageManager {
         if (player == null) return currentLanguage;
         return localeCache.computeIfAbsent(player.getUniqueId(), _ -> {
             Locale locale = player.locale();
-            String full = locale.toString().toLowerCase(Locale.ROOT);
+            String full = normalizeCode(locale.toString());
             if (languages.containsKey(full)) return full;
-            String lang = locale.getLanguage().toLowerCase(Locale.ROOT);
-            String withCountry = lang + "_" + locale.getCountry().toLowerCase(Locale.ROOT);
+            String lang = normalizeCode(locale.getLanguage());
+            String withCountry = lang + "_" + normalizeCode(locale.getCountry());
             if (languages.containsKey(withCountry)) return withCountry;
             if (languages.containsKey(lang)) return lang;
             for (String code : languages.keySet()) {

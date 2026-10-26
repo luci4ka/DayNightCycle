@@ -12,7 +12,12 @@ public class MainConfig {
     @Comment("Версия конфига")
     public int configVersion = 101;
 
-    @Comment("Язык по умолчанию (ru_ru, en_us)")
+    @Comment("""
+        Язык по умолчанию.
+        Встроенные: ru_ru, en_us, zh_cn, es_es
+        Свой язык: положите файл в plugins/DayNightCycle/lang/<code>.yml
+        (например fr_fr.yml) и укажите здесь его код.
+        """)
     public String language = "ru_ru";
 
     @Comment("Проверять обновления при старте (GitHub Releases)")
@@ -82,7 +87,7 @@ public class MainConfig {
     @Configuration
     public static class AfkSection {
         @Comment("Включить AFK-систему")
-        public boolean enabled = true;
+        public boolean enabled = false;
 
         @Comment("Таймаут AFK в минутах (5 = через 5 минут простоя)")
         public int timeoutMinutes = 5;
